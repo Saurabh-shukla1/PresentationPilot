@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+    scroll-behavior: smooth;
+}
+
+:root{
+    --bg-color:#e3edf7;
+    --gradient-white-bg:linear-gradient(0deg,#fff 0%,#edf4fa 51%,#e5eef7 100%);
+    --gradient-color-bg:linear-gradient(180deg,rgba(247,1,120,1)0%,
+                                                rgba(160,8,156,1)51%,
+                                                rgba(99,13,178,1)100%);
+    --main-color:#e6006d;
+    --font-color:#90979f;
+    --hover-box-shadow:rgba(0,0,0,0.19)0px 10px 20px,
+                       rgba(0,0,0,0.23)0px 6px 6px;     
+    --gradient-white-bg2:linear-gradient(98deg,#e5eef7 0%,#fff 100%);                                                          
+}
+
+a{
+    text-decoration: none;
+    color: #000;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-color);
+    overflow-x: hidden;
+}
+
+header{
+    padding: 15px 8%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--gradient-white-bg);
+    z-index: 100;
+    transition: .3s;
+}
+
+header .logo{
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+span{
+    background: var(--gradient-color-bg);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+ul.navlist{
+    display: flex;
+}
+
+.navlist li{
+    margin: 0 1rem;
+}
+
+.navlist li a{
+    display: inline-flex;
+    font-weight: 600;
+}
+
+.navlist li a:hover,.navlist li a.active{
+    background: var(--gradient-color-bg);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.right-header{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    grid-gap: .8rem;
+}
+
+.btn{
+    background: var(--gradient-color-bg);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all .3s ease;
+}
+
+.btn:hover,.btn-box .d-CV:hover{
+    box-shadow: var(--hover-box-shadow);
+}
+
+.menu-icon{
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    /* background: blue; */
+}
+
+.menu-icon .bar,
+.menu-icon::after,
+.menu-icon::before{
+    content: "";
+    display: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 3px;
+    background: #000;
+    margin: 6px 0;
+    transition: .4s;
+}
+
+.menu-icon.active::before{
+    transform: rotate(-45deg) translate(-6px , 6px);
+}
+
+.menu-icon.active::after{
+    transform: rotate(45deg)translate(-8px , -8px);
+}
+
+.menu-icon.active .bar{
+    opacity: 0;
+}
+
+/*======================= About Section ============================ */
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    } 
+  
+    .upload-container {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 15% auto; /* Center vertically */
+    position: relative;
+    width: 450px;
+    height: auto; /* Adjust height automatically based on content */
+    animation: fadeIn 1s ease-in-out;
+    margin-top: 200px;
+    overflow-y: auto; /* Enable scrolling if needed */
+    max-height: 70vh; /* Optional: Limit the max height */
+}
+
+
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .upload-container h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .upload-box {
+      width: 100%;
+      padding: 40px;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      color: #007bff;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .upload-box:hover {
+      background-color: #f0f8ff;
+    }
+
+    .file-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      animation: fadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .file-item .file-name {
+      flex: 1;
+      color: #333;
+    }
+
+    .file-item .delete-button,
+    .file-item .open-button {
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 10px;
+      border: none;
+      background: none;
+    }
+
+    .file-item .delete-button {
+      color: red;
+    }
+
+    .file-item .open-button {
+      color: green;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background-color: #007bff;
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    .progress-bar.complete {
+      background-color: #4caf50;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .buttons button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .buttons button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+
+
+/*======================= footer ============================ */
+footer{
+    text-align: center;
+    margin: 0 8%;
+    padding: 2rem 0;
+    border-top: 2px solid #e8e1e1;
+}
+
+
+#progress{
+    position: fixed;
+    /* background: #194eb9; */
+    z-index: 1000;
+    bottom: 60px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    display: none;
+    place-items: center;
+    border-radius: 50%;
+    color: #1d002c;
+    cursor: pointer;
+    box-shadow: rgba(50,50,93,0.25)0px 50px 100px -20px,
+    rgba(0,0,0,0.3)0px 30px 60px -30px,
+    rgba(10,37,64,0.35)0px -2px 6px 0px inset;
+}
+
+
+#progress-value{
+    display: grid;
+    height: calc(100% - 12px);
+    width: calc(100% - 12px);
+    background: var(--gradient-color-bg);
+    border-radius: 50%;
+    color: #fff;
+    place-items: center;
+    font-size: 25px;
+}
+
+
+/*======================= @keyframes ============================ */
+
+@keyframes moveText{
+    0%,10%,100%{
+        background-position: -24rem 0;
+    }
+
+    65%,85%{
+        background-position: 0rem 0;
+    }
+}
+
+@keyframes moveCursorText{
+    0%,10%,100%{
+        width: 0;
+    }
+
+    65%,78%,85%{
+        width: 100%;
+        opacity: 1;
+    }
+
+    75%,85%{
+        opacity: 0;
+    }
+}
+
+@keyframes animate{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateText{
+    0%{
+        transform: rotate(360deg);
+    }
+    100%{
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes progress{
+   to{
+    stroke-dashoffset: var(--target);
+   }
+}
+
+@keyframes floatImage{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-22px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+
+
+
+
+/*======================= BrakPoints ============================ */
+
+@media(max-width:1200px){
+    html{
+        font-size: 95%;
+    }
+}
+
+@media(max-width:991px){
+    header,section,footer{
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+    .home,.portfolio-box{
+        flex-direction: column-reverse;
+    }
+    .about,.contactSkills{
+        flex-direction: column;
+    }
+    .about .about-img .aboutHero{
+        width: 100%;
+    }
+    .proposal img{
+        width: 52vw;
+    }
+    .portfolio-img img{
+        width: 100%;
+        height: 100%;
+    }
+    .portfolio-gallery{
+        grid-template-columns: repeat(auto-fill,minmax(250px , 1fr));
+    }
+    .img-hero{
+        margin-top: 3rem;
+    }
+}
+
+@media(max-width:768px){
+    .proposal{
+        display: none;
+    }
+    .menu-icon .bar,.menu-icon::after,.menu-icon::before{
+        display: block;
+    }
+    ul.navlist{
+        position: absolute;
+        top: -1000px;
+        transition: all .3s ease;
+        width: 100%;
+        text-align: center;
+        display: block;
+        background: var(--gradient-white-bg);
+        left: 0;
+        border-top: 2px solid rgba(248, 202, 202, .7);
+    }
+    ul.navlist a{
+        font-size: 1.5rem;
+        margin: 1rem 0;
+    }
+    .navlist.active{
+        top: 100%;
+    }
+    .overlay{
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        position: fixed;
+        background: rgba(0,0,0,0.5);
+        z-index: 8;
+        opacity: 0;
+        transform: .3s;
+        pointer-events: none;
+    }
+    body.open .overlay{
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .btn{
+        padding: 10px;
+    }
+    .home{
+        grid-gap: 0;
+    }
+    .fillter-buttons button{
+        padding: 10px;
+        font-size: .8rem;
+    }
+}
+
+@media(max-width:530px){
+    html{
+        font-size: 80%;
+    }
+    section{
+        padding: 50px 3%;
+    }
+    .contact-info form .input-box{
+        display: block;
+    }
+    .input-box input {
+        width: 100%;
+    }
+    .rotate-text{
+        display: none;
+    }
+    .img-hero img{
+        width: 100%;
+    }
+    .text-animate{
+        width: 23.8rem;
+    }
+    .btn-box{
+        width: 266px;
+        margin-bottom: 3rem;
+    }
+    .about-btn button{
+        padding: 10px 15px;
+    }
+    .fillter-buttons{
+        display: grid;
+        grid-gap: 1rem;
+    }
+    .fillter-buttons button{
+        width: 100%;
+        padding: 13px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <header>
+        <a href="#" class="logo"><span>Presentation</span>Pilot</a>
+        <ul class="navlist">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="feedback.html">Feedback</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="right-header">
+            <a class="btn" onclick="logout()">LogOut <i class='bx bx-message-dots' ></i></a>
+            <div class="menu-icon">
+                <div class="bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Upload Section -->
+    <div class="upload-container">
+        <h1>UPLOAD FILE</h1>
+        <div class="upload-box" id="drop-area">
+          <p>Drag & drop files here!</p>
+          <input type="file" id="fileInput" multiple style="display: none;">
+        </div>
+  
+        <div class="buttons">
+          <button id="chooseButton">Choose Files</button>
+          <button id="uploadButton" disabled>Upload Files</button>
+        </div>
+  
+        <div class="file-list" id="fileList">
+          <!-- Uploaded files will be displayed here -->
+        </div>
+      </div>
+    </div>
+
+
+    
+    <!--footer Section-->
+    <footer>
+        <p>Copyright © 2023 by <span>Pars Coder</span> || All Right Reservd.</p>
+    </footer>
+
+    <div id="progress">
+        <span id="progress-value">
+            <i class='bx bxs-chevrons-up' ></i>
+        </span>
+    </div>
+
+    <!-- scroll reveal  -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <!-- Swiper JS -->
+     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <!-- mixitup cdn js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.3.1/mixitup.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const chooseButton = document.getElementById('chooseButton');
+        const uploadButton = document.getElementById('uploadButton');
+    
+        let selectedFiles = [];
+    
+        // Choose files button click
+        chooseButton.addEventListener('click', () => {
+          fileInput.click();
+        });
+    
+        // Enable upload button when files are selected
+        fileInput.addEventListener('change', (e) => {
+          selectedFiles = Array.from(e.target.files);
+          updateFileList();
+          uploadButton.disabled = selectedFiles.length === 0;
+        });
+    
+        // Upload button click
+        uploadButton.addEventListener('click', () => {
+          selectedFiles.forEach(file => uploadFile(file));
+          uploadButton.disabled = true;
+        });
+    
+        // Handle drag and drop
+        dropArea.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+    
+        dropArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          selectedFiles = Array.from(e.dataTransfer.files);
+          updateFileList();
+          uploadButton.disabled = selectedFiles.length === 0;
+        });
+    
+        function updateFileList() {
+          fileList.innerHTML = '';
+          selectedFiles.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.classList.add('file-item');
+    
+            const fileName = document.createElement('div');
+            fileName.classList.add('file-name');
+            fileName.textContent = file.name;
+    
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => {
+              selectedFiles = selectedFiles.filter(f => f !== file);
+              updateFileList();
+              uploadButton.disabled = selectedFiles.length === 0;
+            };
+    
+            fileItem.appendChild(fileName);
+            fileItem.appendChild(deleteButton);
+            fileList.appendChild(fileItem);
+          });
+        }
+    
+        function uploadFile(file) {
+          const fileItem = document.createElement('div');
+          fileItem.classList.add('file-item');
+    
+          const fileName = document.createElement('div');
+          fileName.classList.add('file-name');
+          fileName.textContent = file.name;
+    
+          const progressBarContainer = document.createElement('div');
+          progressBarContainer.classList.add('progress-bar-container');
+    
+          const progressBar = document.createElement('div');
+          progressBar.classList.add('progress-bar');
+    
+          const openButton = document.createElement('button');
+          openButton.classList.add('open-button');
+          openButton.textContent = 'Open';
+          openButton.style.display = 'none';
+          openButton.onclick = () => {
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL, '_blank');
+          };
+    
+          progressBarContainer.appendChild(progressBar);
+          fileItem.appendChild(fileName);
+          fileItem.appendChild(progressBarContainer);
+          fileItem.appendChild(openButton);
+          fileList.appendChild(fileItem);
+    
+          // Simulate file upload progress
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 10;
+            progressBar.style.width = progress + '%';
+            if (progress >= 100) {
+              clearInterval(interval);
+              progressBar.classList.add('complete');
+              openButton.style.display = 'inline';
+            }
+          }, 200);
+        }
+        // Logout logic
+    function logout() {
+        if (sessionStorage.getItem('isLoggedIn')) {
+            sessionStorage.removeItem('isLoggedIn'); // Remove login status
+            alert("You have logged out.");
+            document.querySelector('.content').style.display = 'none'; // Hide content
+            showPopup(); // Show login form
+        }
+    }
+
+    // Attach logout functionality
+    document.querySelector('.right-header .btn').addEventListener('click', logout);
+
+    
+        // Logout logic
+        function logout() {
+    const confirmation = confirm("Are you sure you want to log out?");
+    if (confirmation) {
+        sessionStorage.removeItem('isLoggedIn'); // Remove login status
+        alert("You have logged out.");
+        window.location.href = 'index.html'; // Redirect to the login page
+    } else {
+        alert("Logout canceled.");
+    }
+}
+
+      </script>
+</body>
+</html>

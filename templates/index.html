@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresentationPilot</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <!-- boxicon css link -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Link Swiper's CSS -->
+     <style>
+        /*======================= Singup Section ============================ */
+#overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Adds a dark overlay effect */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s;
+        }
+
+        #overlay.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Popup form styling */
+        .form-container {
+            position: relative;
+            width: 350px;
+            background: rgba(255, 255, 255, 0.9); /* Slightly transparent form background */
+            border-radius: 10px;
+            padding: 20px;
+            color: #333;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-container h2 {
+            color: #ff7200;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            background: transparent;
+            border: 1px solid #ff7200;
+            color: #333;
+            font-size: 16px;
+            border-radius: 14px;
+        }
+
+        .form-container input::placeholder {
+            color: #999;
+        }
+
+        .form-container .btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #ff7200;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Close button styling */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff7200;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* Tab links for switching between forms */
+        .tab-links {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .tab-link {
+            margin: 0 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ff7200;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .tab-link.active {
+            text-decoration: underline;
+        }
+
+        /* Hide website content initially */
+        .content {
+            display: none;
+        }
+     </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+</head>
+<body onload="showPopup()">
+    <div class="overlay"></div>
+    <header>
+        <a href="#" class="logo"><span>Presentation</span>Pilot</a>
+        <ul class="navlist">
+            <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+        <div class="right-header">
+            <a href="{{ url_for('index') }}" class="btn">LogOut <i class='bx bx-message-dots' ></i></a>
+            <div class="menu-icon">
+                <div class="bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <section class="home" id="home">
+        <div class="hero-info">
+            <h3>Welcome To PresentationPilot</h3>
+            <h2>Thanks for Using Us</h2>
+
+            <div class="text-animate">
+                <h2>PresentationPilot is uses gesture controls to navigate presentations seamlessly</h2>
+            </div>
+
+            <p>Powered by computer vision and machine learning, it allows presenters to control slides with intuitive hand movements.</p>
+
+            <div class="btn-box">
+                <a href="{{ url_for('start') }}" class="btn1">Start<i class='bx bx-right-arrow-alt' ></i></a>
+            </div>
+            </div>
+        </div>
+        <div class="img-hero">
+            <img src="../static/shapes/gesturetype.gif" alt="">
+            <div class="rotate-text">
+                <div class="text">
+                    <p>This website gives you Gesture Control On PPT,PDF,Doc,etc.</p>
+                </div>
+                <span><i></i></span>
+            </div>
+        </div>
+    </section>
+
+    <!--SingUp Section-->
+    <!-- Overlay for the popup -->
+<div id="overlay">
+    <div class="form-container">
+        <!-- Tab Links -->
+        <div class="tab-links">
+            <span class="tab-link active" onclick="openForm('login')">Login</span>
+            <span class="tab-link" onclick="openForm('signup')">Signup</span>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login" class="form">
+            <h2>Login Here</h2>
+            <input type="email" id="login-email" placeholder="Enter Email Here">
+            <input type="password" id="login-password" placeholder="Enter Password Here">
+            <button type="button" class="btn" onclick="login()">Login</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup" class="form" style="display: none;">
+            <h2>Sign Up Here</h2>
+            <input type="text" id="signup-name" placeholder="Enter Name">
+            <input type="email" id="signup-email" placeholder="Enter Email">
+            <input type="password" id="signup-password" placeholder="Enter Password">
+            <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
+            <button type="button" class="btn" onclick="signup()">Sign Up</button>
+        </div>
+    </div>
+</div>
+
+
+    <footer>
+        <p>Copyright © 2023 by <span>Pars Coder</span> || All Right Reservd.</p>
+    </footer>
+
+    
+
+    <!-- scroll reveal  -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <!-- Swiper JS -->
+     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <!-- mixitup cdn js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.3.1/mixitup.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Show popup on page load
+        function showPopup() {
+            if (!sessionStorage.getItem('isLoggedIn')) {
+                document.getElementById('overlay').classList.add('show');
+            } else {
+                document.querySelector('.content').style.display = 'block'; // Show content
+            }
+        }
+    
+        function closePopup() {
+            document.getElementById('overlay').classList.remove('show');
+        }
+    
+        function openForm(form) {
+            document.getElementById('login').style.display = form === 'login' ? 'block' : 'none';
+            document.getElementById('signup').style.display = form === 'signup' ? 'block' : 'none';
+    
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.toggle('active', link.innerText.toLowerCase() === form);
+            });
+        }
+    
+        // Store user data
+        let userData = {};
+    
+        function signup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+    
+            if (name && email && password && confirmPassword) {
+                if (password === confirmPassword) {
+                    userData = { name, email, password };
+                    alert("Sign up successful! Now log in with the same credentials.");
+                    openForm('login');
+                } else {
+                    alert("Passwords do not match.");
+                }
+            } else {
+                alert("All fields are required.");
+            }
+        }
+    
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+    
+            if (email === userData.email && password === userData.password) {
+                alert("Login successful!");
+                closePopup();
+                sessionStorage.setItem('isLoggedIn', true); // Store login status in sessionStorage
+                document.querySelector('.content').style.display = 'block'; // Show content
+            } else {
+                alert("Invalid credentials.");
+            }
+        }
+    
+        // Logout logic
+        function logout() {
+            if (sessionStorage.getItem('isLoggedIn')) {
+                sessionStorage.removeItem('isLoggedIn'); // Remove login status
+                alert("You have logged out.");
+                document.querySelector('.content').style.display = 'none'; // Hide content
+                showPopup(); // Show login form
+            }
+        }
+    
+        // Attach logout functionality
+        document.querySelector('.right-header .btn').addEventListener('click', logout);
+
+        // Store user data in sessionStorage
+function signup() {
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+    if (name && email && password && confirmPassword) {
+        if (password === confirmPassword) {
+            const user = { name, email, password };
+            sessionStorage.setItem('userData', JSON.stringify(user)); // Store user data in session storage
+            alert("Sign up successful! Now log in with the same credentials.");
+            openForm('login');
+        } else {
+            alert("Passwords do not match.");
+        }
+    } else {
+        alert("All fields are required.");
+    }
+}
+
+function login() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    const user = JSON.parse(sessionStorage.getItem('userData')); // Retrieve stored user data
+
+    if (user && email === user.email && password === user.password) {
+        alert("Login successful!");
+        closePopup();
+        sessionStorage.setItem('isLoggedIn', true); // Store login status in sessionStorage
+        document.querySelector('.content').style.display = 'block'; // Show content
+    } else {
+        alert("Invalid credentials.");
+    }
+}
+
+function showPopup() {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+        document.getElementById('overlay').classList.add('show');
+    } else {
+        document.querySelector('.content').style.display = 'block'; // Show content
+    }
+}
+
+ 
+    </script>
+    
+</body>
+</html>
