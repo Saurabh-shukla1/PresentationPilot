@@ -483,7 +483,7 @@ footer{
 <body>
     <div class="overlay"></div>
     <header>
-        <a href="#" class="logo"><span>Presentation</span>Pilot</a>
+        <a href="{{ url_for('index') }}" class="logo"><span>Presentation</span>Pilot</a>
         <ul class="navlist">
             <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
             <li><a href="{{ url_for('about') }}">About</a></li>
@@ -529,7 +529,7 @@ footer{
         <div class="developer-section">
             <h2>Developed By</h2>
             <div class="developer">
-                <img src="../static/sanjay.jpg" alt="Saurabh Shukla"> 
+                <img src="../static/profile.jpg" alt="Saurabh Shukla">
                 <div class="developer-details">
                     <h3>Saurabh Shukla</h3>
                     <p>Lead Developer</p>
@@ -568,7 +568,7 @@ footer{
      <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <!-- mixitup cdn js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.3.1/mixitup.min.js"></script>
-    <script src="script.js"></script>
+    <script src="../static/script.js"></script>
     <script>
          // Logout logic
          function logout() {
