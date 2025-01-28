@@ -145,19 +145,21 @@ ul.navlist{
       to { opacity: 1; }
     } 
   
-    .upload-container {
+
+
+.upload-container1 {
     background: rgba(255, 255, 255, 0.85);
-    padding: 30px;
+    padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     text-align: center;
-    margin: 15% auto; /* Center vertically */
+    margin: 100% 50%; /* Center vertically */
     position: relative;
-    width: 450px;
-    height: auto; /* Adjust height automatically based on content */
+    width: 250px;
+    height: 250px; /* Adjust height automatically based on content */
     animation: fadeIn 1s ease-in-out;
-    margin-top: 200px;
-    overflow-y: auto; /* Enable scrolling if needed */
+    margin-top: 100px;
+    overflow-y: ; /* Enable scrolling if needed */
     max-height: 70vh; /* Optional: Limit the max height */
 }
 
@@ -167,21 +169,23 @@ ul.navlist{
       to { transform: translateY(0); opacity: 1; }
     }
 
-    .upload-container h1 {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #333;
-    }
+
 
     .upload-box {
       width: 100%;
       padding: 40px;
-      border: 2px dashed #ccc;
+
       border-radius: 8px;
       color: #007bff;
       cursor: pointer;
       margin-bottom: 20px;
       transition: background-color 0.3s ease;
+    }
+
+    .board {
+        width: 80%;
+        border-radius: 8px;
+
     }
 
     .upload-box:hover {
@@ -500,12 +504,63 @@ footer{
         padding: 13px;
     }
 }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+            margin-top: 100px;
+            margin-bottom: 20px
+        }
+
+        .upload-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            max-width: 300px;
+        }
+
+        .upload-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 1.5rem;
+        }
+
+        .board {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            hight: auto;
+            width: auto;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .btn1 span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .bx-right-arrow-alt {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <div class="overlay"></div>
     <header>
-        <a href="#" class="logo"><span>Presentation</span>Pilot</a>
+        <a href="{{ url_for('index') }}" class="logo"><span>Presentation</span>Pilot</a>
         <ul class="navlist">
             <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
             <li><a href="{{ url_for('about') }}">About</a></li>
@@ -520,30 +575,33 @@ footer{
         </div>
     </header>
 
-    <!-- Upload Section -->
-  <!--  <div class="upload-container">
-        <h1>UPLOAD FILE</h1>
-        <div class="upload-box" id="drop-area">
-          <p>Drag & drop files here!</p>
-          <input type="file" id="fileInput" multiple style="display: none;">
-        </div>
-  
-        <div class="buttons">
-          <button id="chooseButton">Choose Files</button>
-          <button id="uploadButton" disabled>Upload Files</button>
-        </div>
-  
-        <div class="file-list" id="fileList">
-          Uploaded files will be displayed here 
-        </div>
-      </div>
-    </div>-->
+
     <!--powerpoint-->
-    <div class="upload-container">
-        <a href="{{ url_for('powerpoint') }}" class="btn1">USe Gestures in Powerpoint <i class='bx bx-right-arrow-alt' ></i></a>
-    </div>
-    <div class="upload-container">
-        <a href="{{ url_for('Gtype1') }}" class="btn1">Upload AND Present<i class='bx bx-right-arrow-alt' ></i></a>
+   <div class="container">
+
+       <div class="upload-box">
+            <a href="{{ url_for('Gtype1') }}" class="btn1">
+                <img src="../static/gesture1.png" class="board" alt="Gesture">
+                <span>Gesture Based   Presentation <i class='bx bx-right-arrow-alt'></i></span>
+            </a>
+        </div>
+
+
+        <div class="upload-box">
+            <a href="{{ url_for('powerpoint') }}" class="btn1">
+                <img src="../static/whiteboard.jpg" class="board" alt="Whiteboard">
+                <span>White Board <i class='bx bx-right-arrow-alt'></i></span>
+            </a>
+        </div>
+
+        <div class="upload-box">
+            <a href="{{ url_for('Draw') }}" class="btn1">
+                <img src="../static/Draw.png" class="board" alt="Whiteboard">
+                <span>Draw On slides <i class='bx bx-right-arrow-alt'></i></span>
+            </a>
+        </div>
+
+
     </div>
 
 
@@ -551,7 +609,7 @@ footer{
     
     <!--footer Section-->
     <footer>
-        <p>Copyright © 2023 by <span>Pars Coder</span> || All Right Reservd.</p>
+        <p>Made with ❤️ by <span>Saurabh & Sanjay</span> || All Right Reserved.</p>
     </footer>
 
     <div id="progress">

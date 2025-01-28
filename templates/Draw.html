@@ -1,0 +1,296 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT Image Editor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        #canvas {
+            cursor: crosshair;
+        }
+        .color-picker {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .selected {
+            border: 3px solid #333;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body onload="checkAuthState()" class="bg-gray-100 min-h-screen">
+    
+        <div class="overlay"></div>
+        <header>
+            <a href="{{ url_for('index') }}" class="logo"><span>Presentation</span>Pilot</a>
+            <ul class="navlist">
+                <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+            <div class="right-header">
+                <a href="{{ url_for('index') }}" class="btn">LogOut <i class='bx bx-message-dots' ></i></a>
+                <div class="menu-icon">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">PPT Image Editor</h1>
+
+        <!-- Upload Section -->
+        <div class="mb-8 text-center">
+            <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+            <label for="fileInput" class="bg-blue-500 text-white px-6 py-2 rounded-lg cursor-pointer hover:bg-blue-600">
+                Upload Images
+            </label>
+        </div>
+
+        <!-- Drawing Tools -->
+        <div class="mb-4 flex justify-center items-center space-x-4" id="drawingTools" style="display: none;">
+            <div class="flex items-center">
+                <span class="mr-2">Colors:</span>
+                <div class="color-picker selected" style="background-color: #000000" data-color="#000000"></div>
+                <div class="color-picker" style="background-color: #ff0000" data-color="#ff0000"></div>
+                <div class="color-picker" style="background-color: #00ff00" data-color="#00ff00"></div>
+                <div class="color-picker" style="background-color: #0000ff" data-color="#0000ff"></div>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-2">Brush Size:</span>
+                <input type="range" min="1" max="20" value="5" class="w-32" id="brushSize">
+            </div>
+            <button id="eraser" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Eraser</button>
+            <button id="clear" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Clear</button>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex justify-center space-x-4 mb-4" id="navigation" style="display: none;">
+            <button id="prevImage" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Previous</button>
+            <span id="imageCounter" class="py-2">Image 0 of 0</span>
+            <button id="nextImage" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Next</button>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="flex justify-center">
+            <canvas id="canvas" class="border border-gray-300 bg-white"></canvas>
+        </div>
+
+        <!-- Save Button -->
+        <div class="text-center mt-4">
+            <button id="saveButton" class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600" style="display: none;" onclick="saveCanvas()">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+
+    <footer>
+        <p>Made with ❤️ by <span>Saurabh & Sanjay</span> || All Right Reserved.</p>
+    </footer>
+         <div id="progress">
+        <span id="progress-value">
+            <i class='bx bxs-chevrons-up' ></i>
+        </span>
+    </div>
+
+
+    <script>
+        let currentImageIndex = 0;
+        let images = [];
+        let isDrawing = false;
+        let currentColor = '#000000';
+        let currentTool = 'brush';
+        let ctx;
+        let canvas;
+        let originalImage;
+
+        // Initialize canvas and controls
+        document.addEventListener('DOMContentLoaded', function() {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+
+            // File upload handling
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+            // Drawing tools
+            setupDrawingTools();
+
+            // Navigation controls
+            document.getElementById('prevImage').addEventListener('click', showPreviousImage);
+            document.getElementById('nextImage').addEventListener('click', showNextImage);
+
+            // Save button
+            document.getElementById('saveButton').addEventListener('click', saveChanges);
+        });
+
+        function setupDrawingTools() {
+            // Color picker
+            document.querySelectorAll('.color-picker').forEach(picker => {
+                picker.addEventListener('click', function() {
+                    document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('selected'));
+                    this.classList.add('selected');
+                    currentColor = this.dataset.color;
+                    currentTool = 'brush';
+                });
+            });
+
+            // Eraser tool
+            document.getElementById('eraser').addEventListener('click', function() {
+                currentTool = 'eraser';
+                document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('selected'));
+            });
+
+            // Clear canvas
+            document.getElementById('clear').addEventListener('click', function() {
+                loadImage(images[currentImageIndex]);
+            });
+
+            // Canvas drawing events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+        }
+
+        function handleFileUpload(e) {
+            const files = Array.from(e.target.files);
+            images = [];
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    images.push(event.target.result);
+                    if (images.length === files.length) {
+                        showImage(0);
+                        document.getElementById('drawingTools').style.display = 'flex';
+                        document.getElementById('navigation').style.display = 'flex';
+                        document.getElementById('saveButton').style.display = 'inline-block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function showImage(index) {
+            if (index >= 0 && index < images.length) {
+                currentImageIndex = index;
+                loadImage(images[index]);
+                updateImageCounter();
+            }
+        }
+
+        function loadImage(src) {
+            originalImage = new Image();
+            originalImage.onload = function() {
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                ctx.drawImage(originalImage, 0, 0);
+            };
+            originalImage.src = src;
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineWidth = document.getElementById('brushSize').value;
+            ctx.lineCap = 'round';
+
+            if (currentTool === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = currentColor;
+            }
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function showPreviousImage() {
+            showImage(currentImageIndex - 1);
+        }
+
+        function showNextImage() {
+            showImage(currentImageIndex + 1);
+        }
+
+        function updateImageCounter() {
+            document.getElementById('imageCounter').textContent =
+                `Image ${currentImageIndex + 1} of ${images.length}`;
+        }
+
+        function saveChanges() {
+            const imageData = canvas.toDataURL('image/png');
+
+            fetch('/save-drawing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    imageData: imageData,
+                    filename: `image_${currentImageIndex + 1}.png`
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Changes saved successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving changes:', error);
+                alert('Error saving changes');
+            });
+        }
+        function saveCanvas() {
+            const link = document.createElement('a');
+            link.download = 'drawing.png';
+            link.href = canvas.toDataURL();
+            link.click();
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = 'Drawing saved!';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -500,12 +500,172 @@ footer{
         padding: 13px;
     }
 }
+        .upload-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: min(90%, 500px);
+            margin: 120px auto 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .upload-container h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--main-color);
+            text-align: center;
+        }
+
+        .upload-container p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .gesture-list {
+            list-style: none;
+            margin: 0 auto;
+            max-width: 400px;
+            background: var(--gradient-white-bg2);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .gesture-list li {
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--main-color);
+            background: white;
+            border-radius: 0 5px 5px 0;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .gesture-list li:hover {
+            transform: translateX(5px);
+        }
+
+        .gesture-list li::before {
+            content: "👆";
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .buttons {
+            margin-top: 2rem;
+            opacity: 1;
+            text-align: center;
+        }
+
+        #uploadButton {
+            background: var(--gradient-color-bg);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        #uploadButton:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-box-shadow);
+        }
+
+        /* Improved Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--gradient-white-bg);
+        }
+
+        footer p {
+            color: #666;
+        }
+
+        footer span {
+            font-weight: 600;
+        }
+
+        /* Progress Button */
+        #progress {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            place-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #progress:hover {
+            transform: translateY(-3px);
+        }
+
+        #progress-value {
+            height: calc(100% - 8px);
+            width: calc(100% - 8px);
+            background: var(--gradient-color-bg);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .upload-container {
+                width: 95%;
+                padding: 1.5rem;
+                margin-top: 100px;
+            }
+
+            .gesture-list {
+                padding: 1rem;
+            }
+
+            .gesture-list li {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            #uploadButton {
+                padding: 0.7rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .upload-container h1 {
+                font-size: 1.2rem;
+            }
+
+            .gesture-list li::before {
+                font-size: 1rem;
+            }
     </style>
 </head>
 <body>
     <div class="overlay"></div>
     <header>
-        <a href="#" class="logo"><span>Presentation</span>Pilot</a>
+        <a href="index" class="logo"><span>Presentation</span>Pilot</a>
         <ul class="navlist">
             <<li><a href="{{ url_for('index') }}" class="active">Home</a></li>
             <li><a href="{{ url_for('about') }}">About</a></li>
@@ -519,38 +679,18 @@ footer{
             </div>
         </div>
     </header>
-
-    <!-- Upload Section
     <div class="upload-container">
-        <h1>UPLOAD FILE</h1>
-        <div class="upload-box" id="drop-area">
-          <p>Drag & drop files here!</p>
-          <input type="file" id="fileInput" multiple style="display: none;">
-        </div>
-
+        <h1>Gesture-Controlled Presentation</h1>
+        <p>Control your presentation using intuitive hand gestures:</p>
+        <ul class="gesture-list">
+            <li>Thumb up: Navigate left</li>
+            <li>Pinky up: Navigate right</li>
+            <li>Index finger and middle finger: Pointer</li>
+            <li>Index finger only: Draw</li>
+            <li>All fingers up: Erase</li>
+        </ul>
         <div class="buttons">
-          <button id="chooseButton">Choose Files</button>
-          <button id="uploadButton" disabled>Upload Files</button>
-        </div>
-
-        <div class="file-list" id="fileList">
-           Uploaded files will be displayed here
-        </div>
-      </div>
-    </div>-->
-    <div class="upload-container">
-    <h1>Gesture-Controlled Presentation</h1>
-    <p>Control your presentation using gestures:</p>
-    <ul>
-        <li>Thumb up: Navigate left</li>
-        <li>Pinky up: Navigate right</li>
-        <li>Index finger and middle finger: Pointer</li>
-        <li>Index finger only: Draw</li>
-        <li>All fingers up: Erase</li>
-    </ul>
-         <div class="buttons">
-
-          <button id="uploadButton" onclick="window.location.href='{{ url_for('upload') }}'">Upload Files</button>
+            <button id="uploadButton" onclick="window.location.href='{{ url_for('upload') }}'">Upload Files</button>
         </div>
     </div>
 
@@ -559,7 +699,7 @@ footer{
 
     <!--footer Section-->
     <footer>
-        <p>Copyright © 2023 by <span>Pars Coder</span> || All Right Reservd.</p>
+        <p>Made with ❤️ by <span>Saurabh & Sanjay</span> || All Right Reserved.</p>
     </footer>
 
     <div id="progress">
@@ -601,31 +741,3 @@ footer{
 
 
 
-
-
-
-
-
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gesture-Controlled Presentation</title>
-</head>
-<body>
-    <h1>Gesture-Controlled Presentation</h1>
-    <p>Control your presentation using gestures:</p>
-    <ul>
-        <li>Thumb up: Navigate left</li>
-        <li>Pinky up: Navigate right</li>
-        <li>Index finger and middle finger: Pointer</li>
-        <li>Index finger only: Draw</li>
-        <li>All fingers up: Erase</li>
-    </ul>
-    <p><a href="{{ url_for('upload') }}">Upload New Slides</a></p>
-    <div style="text-align: center;">
-        <img src="{{ url_for('video_feed') }}" style="width: 80%; border: 1px solid black;">
-    </div>
-</body>
-</html> -->

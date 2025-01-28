@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hand Gesture PPT Controller</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .video-feed {
+            width: 640px;
+            height: 480px;
+            border: 2px solid #333;
+        }
+        .slide-container {
+            width: 800px;
+            height: 600px;
+            border: 2px solid #333;
+            position: relative;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .upload-form {
+            margin-bottom: 20px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background: #f2dede;
+            color: #a94442;
+        }
+        .gesture-guide {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .slide-info {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <div class="upload-form">
+            <h3>Upload Presentation</h3>
+            <input type="file" id="pptxFile" accept=".pptx">
+            <button onclick="uploadFile()">Upload</button>
+        </div>
+        <button onclick="clearDrawings()">Clear Drawings</button>
+        <div id="status" class="status"></div>
+    </div>
+
+    <div class="container">
+        <div class="video-feed">
+            <img src="{{ url_for('video_feed') }}" width="640" height="480">
+        </div>
+        <div class="slide-container" id="slideContainer">
+            <div class="slide-info" id="slideInfo"></div>
+        </div>
+    </div>
+
+    <div class="gesture-guide">
+        <h3>Gesture Guide:</h3>
+        <ul>
+            <li>Index finger up → Next slide</li>
+            <li>Middle finger up → Previous slide</li>
+            <li>Pinch (thumb + index) → Draw</li>
+            <li>Three fingers up → Erase</li>
+            <li>Index + Middle fingers up → Highlight</li>
+        </ul>
+    </div>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('pptxFile');
+            const statusDiv = document.getElementById('status');
+
+            if (!fileInput.files.length) {
+                showStatus('Please select a file first', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showStatus(data.error, 'error');
+                } else {
+                    showStatus('Presentation uploaded successfully!', 'success');
+                    updateSlide();
+                }
+            })
+            .catch(error => {
+                showStatus('Error uploading file: ' + error, 'error');
+            });
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + type;
+        }
+
+        function updateSlide() {
+            fetch('/get_current_slide')
+                .then(response => response.json())
+                .then(data => {
+                    // Update slide display
+                    document.getElementById('slideContainer').innerHTML =
+                        `<img src="/static/slides/slide${data.slide}.jpg" width="800" height="600">
+                         <div class="slide-info" id="slideInfo">Slide ${data.slide + 1} / ${data.total_slides}</div>`;
+                });
+        }
+
+        function clearDrawings() {
+            fetch('/clear_drawings')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showStatus('Drawings cleared', 'success');
+                    }
+                });
+        }
+
+        // Update slide every second
+        setInterval(updateSlide, 1000);
+    </script>
+</body>
+</html>

@@ -169,6 +169,10 @@ def Gtype1():
 def main():
     return render_template('main.html')
 
+@app.route('/Draw')
+def Draw():
+    return render_template('Draw.html')
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':

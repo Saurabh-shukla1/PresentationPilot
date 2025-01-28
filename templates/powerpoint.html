@@ -1,0 +1,426 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Drawing App</title>
+      <link rel="stylesheet" href="../static/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 5px 15px;
+            border-right: 2px solid #dee2e6;
+        }
+
+        .tool-group:last-child {
+            border-right: none;
+        }
+
+        .canvas-container {
+            position: relative;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        #drawingCanvas {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        button.active {
+            background-color: #28a745;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+
+        .size-slider {
+            width: 100px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .shape-btn {
+            padding: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            animation: fadeIn 0.3s ease-in;
+            z-index: 1000;
+        }
+
+    </style>
+</head>
+<body onload="checkAuthState()">
+    <body onload="showPopup()">
+        <div class="overlay"></div>
+        <header>
+            <a href="{{ url_for('index') }}" class="logo"><span>Presentation</span>Pilot</a>
+            <ul class="navlist">
+                <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+            <div class="right-header">
+                <a href="{{ url_for('index') }}" class="btn">LogOut <i class='bx bx-message-dots' ></i></a>
+                <div class="menu-icon">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </header>
+    <div class="container">
+        <div class="toolbar">
+            <div class="tool-group">
+                <input type="color" class="color-picker" id="colorPicker" value="#000000" title="Color">
+                <input type="range" class="size-slider" id="sizeSlider" min="1" max="50" value="5" title="Brush Size">
+            </div>
+
+            <div class="tool-group">
+                <button onclick="setTool('brush')" class="active" id="brushBtn">🖌️ Brush</button>
+                <button onclick="setTool('eraser')" id="eraserBtn">⌫ Eraser</button>
+            </div>
+
+            <div class="tool-group">
+                <button onclick="setShape('rect')" class="shape-btn" id="rectBtn">⬜</button>
+                <button onclick="setShape('circle')" class="shape-btn" id="circleBtn">⭕</button>
+                <button onclick="setShape('line')" class="shape-btn" id="lineBtn">➖</button>
+            </div>
+
+            <div class="tool-group">
+                <button onclick="undo()">↩️ Undo</button>
+                <button onclick="redo()">↪️ Redo</button>
+                <button onclick="clearCanvas()">🗑️ Clear</button>
+            </div>
+
+            <div class="tool-group">
+                <button onclick="saveCanvas()">💾 Save</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="drawingCanvas"></canvas>
+        </div>
+    </div>
+
+         <footer>
+        <p>Made with ❤️ by <span>Saurabh & Sanjay</span> || All Right Reserved.</p>
+    </footer>
+         <div id="progress">
+        <span id="progress-value">
+            <i class='bx bxs-chevrons-up' ></i>
+        </span>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentTool = 'brush';
+        let currentShape = null;
+        let currentColor = '#000000';
+        let currentSize = 5;
+        let startX, startY;
+
+        // Undo/Redo functionality
+        const undoStack = [];
+        const redoStack = [];
+
+         // Set canvas size and handle resize
+        function resizeCanvas() {
+            // Store the current canvas content
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            tempCanvas.getContext('2d').drawImage(canvas, 0, 0);
+
+            // Resize canvas
+            canvas.width = canvas.parentElement.clientWidth - 20;
+            canvas.height = window.innerHeight * 0.7;
+
+            // Restore the content
+            ctx.drawImage(tempCanvas, 0, 0);
+
+            // Reset context properties after resize
+            ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        window.addEventListener('resize', debounce(resizeCanvas, 250));
+        resizeCanvas();
+
+        // Debounce function to limit resize events
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        // Save canvas state
+        function saveState() {
+            undoStack.push(canvas.toDataURL());
+            redoStack.length = 0;
+        }
+
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [startX, startY] = [e.offsetX, e.offsetY];
+
+            if (currentShape) {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            if (currentShape) {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.drawImage(canvas, 0, 0);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(tempCanvas, 0, 0);
+
+                ctx.beginPath();
+                if (currentShape === 'rect') {
+                    ctx.rect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+                } else if (currentShape === 'circle') {
+                    const radius = Math.sqrt(Math.pow(e.offsetX - startX, 2) + Math.pow(e.offsetY - startY, 2));
+                    ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+                } else if (currentShape === 'line') {
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                }
+                ctx.stroke();
+            } else {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        }
+
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            saveState();
+        }
+
+        // Tool functions
+        function setTool(tool) {
+            currentTool = tool;
+            currentShape = null;
+            document.querySelectorAll('.toolbar button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${tool}Btn`).classList.add('active');
+
+            ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : currentColor;
+            ctx.lineWidth = currentSize;
+        }
+
+        function setShape(shape) {
+            currentShape = currentShape === shape ? null : shape;
+            document.querySelectorAll('.shape-btn').forEach(btn => btn.classList.remove('active'));
+            if (currentShape) {
+                document.getElementById(`${shape}Btn`).classList.add('active');
+            }
+        }
+
+        // Canvas manipulation
+        function clearCanvas() {
+            saveState();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function undo() {
+            if (undoStack.length > 0) {
+                redoStack.push(canvas.toDataURL());
+                const imgData = undoStack.pop();
+                const img = new Image();
+                img.src = imgData;
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+            }
+        }
+
+        function redo() {
+            if (redoStack.length > 0) {
+                undoStack.push(canvas.toDataURL());
+                const imgData = redoStack.pop();
+                const img = new Image();
+                img.src = imgData;
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+            }
+        }
+
+        function saveCanvas() {
+            const link = document.createElement('a');
+            link.download = 'drawing.png';
+            link.href = canvas.toDataURL();
+            link.click();
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = 'Drawing saved!';
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            if (currentTool !== 'eraser') {
+                ctx.strokeStyle = currentColor;
+            }
+        });
+
+        document.getElementById('sizeSlider').addEventListener('input', (e) => {
+            currentSize = e.target.value;
+            ctx.lineWidth = currentSize;
+        });
+
+        // Initialize canvas
+        clearCanvas();
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = currentSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+    document.querySelector('.right-header .btn').addEventListener('click', logout);
+
+         // Logout logic
+        function logout() {
+    const confirmation = confirm("Are you sure you want to log out?");
+    if (confirmation) {
+        sessionStorage.removeItem('isLoggedIn'); // Remove login status
+        alert("You have logged out.");
+        window.location.href = 'index.html'; // Redirect to the login page
+    } else {
+        alert("Logout canceled.");
+    }
+}
+    </script>
+</body>
+</html>
