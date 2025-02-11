@@ -459,6 +459,22 @@ footer{
         padding: 13px;
     }
 }
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -481,7 +497,95 @@ footer{
 
     <!-- Contact Section -->
 <div class="contact-form">
-    <h2>Contact Us</h2>
+        <h2>Contact Us</h2>
+        <div id="success-alert" class="alert alert-success">Message sent successfully!</div>
+        <div id="error-alert" class="alert alert-error">There was an error sending your message.</div>
+
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+            <input type="hidden" name="access_key" value="b867992d-90bf-4687-b6cb-24af4647fc19">
+
+            <div class="input-box">
+                <label for="name">First Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="input-box">
+                <label for="surname">Last Name:</label>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+            <div class="input-box">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-box">
+                <label for="problem">Describe Your Problem:</label>
+                <textarea id="problem" name="message" rows="5" placeholder="Write your issue here..." required></textarea>
+            </div>
+            <button type="submit" id="submit-btn">Submit</button>
+        </form>
+    </div>
+
+    <!-- Keep existing footer -->
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+
+            // Hide any existing alerts
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            // Disable submit button while processing
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending...';
+
+            try {
+                const formData = new FormData(form);
+                const object = {};
+                formData.forEach((value, key) => object[key] = value);
+
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(object)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success message
+                    successAlert.style.display = 'block';
+                    form.reset();
+                } else {
+                    // Show error message
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorAlert.style.display = 'block';
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit';
+            }
+        }
+    </script>
+    <!--<h2>Contact Us</h2>
     <form action="send_email.php" method="post">
         <div class="input-box">
             <label for="name">First Name:</label>
@@ -502,15 +606,19 @@ footer{
         <div class="input-box">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
+
+
         </div>
-        <!-- New Input Box for User Problems -->
+       New Input Box for User Problems
+
         <div class="input-box">
             <label for="problem">Describe Your Problem:</label>
             <textarea id="problem" name="problem" rows="5" placeholder="Write your issue here..." required></textarea>
         </div>
         <button type="submit">Submit</button>
     </form>
-</div>
+    -->
+
 
 
 

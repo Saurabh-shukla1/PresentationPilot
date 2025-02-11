@@ -505,6 +505,121 @@ footer{
         padding: 13px;
     }
 }
+                .feedback-container {
+            max-width: 600px;
+            margin: 120px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .feedback-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            background: var(--gradient-color-bg);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .feedback-form .input-box {
+            margin-bottom: 20px;
+        }
+
+        .feedback-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .feedback-form input,
+        .feedback-form select,
+        .feedback-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .feedback-form input:focus,
+        .feedback-form select:focus,
+        .feedback-form textarea:focus {
+            border-color: #e6006d;
+            outline: none;
+        }
+
+        .rating-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .rating-btn {
+            background: var(--gradient-white-bg2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rating-btn:hover,
+        .rating-btn.active {
+            background: var(--gradient-color-bg);
+            color: white;
+        }
+
+        .feedback-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .feedback-form button1 {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-color-bg);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-form button1:hover {
+            box-shadow: var(--hover-box-shadow);
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .feedback-container {
+                margin: 100px 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -526,7 +641,7 @@ footer{
     </header>
 
     <!-- Feedback Section -->
-     <!-- Modal -->
+     <!-- Modal
      <div id="feedbackModal" class="modal">
         <div class="feedback-section" id="feedbackSection">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -542,8 +657,130 @@ footer{
             <div id="response-message" class="response-message"></div>
         </div>
     </div>
+-->
+    <div class="feedback-container">
+        <h2>Your Feedback Matters</h2>
+        <div id="success-alert" class="alert alert-success">Thank you for your feedback!</div>
+        <div id="error-alert" class="alert alert-error">There was an error submitting your feedback.</div>
 
-    
+        <form id="feedbackForm" class="feedback-form" onsubmit="handleSubmit(event)">
+            <input type="hidden" name="access_key" value="b867992d-90bf-4687-b6cb-24af4647fc19">
+
+            <div class="input-box">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="input-box">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="input-box">
+                <label>How would you rate your experience?</label>
+                <div class="rating-container">
+                    <button type="button1" class="rating-btn" data-rating="1">1</button>
+                    <button type="button1" class="rating-btn" data-rating="2">2</button>
+                    <button type="button1" class="rating-btn" data-rating="3">3</button>
+                    <button type="button1" class="rating-btn" data-rating="4">4</button>
+                    <button type="button1" class="rating-btn" data-rating="5">5</button>
+                </div>
+                <input type="hidden" id="rating" name="rating" required>
+            </div>
+
+            <div class="input-box">
+                <label for="category">Feedback Category:</label>
+                <select id="category" name="category" required>
+                    <option value="">Select a category</option>
+                    <option value="usability">Usability</option>
+                    <option value="performance">Performance</option>
+                    <option value="design">Design</option>
+                    <option value="features">Features</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label for="feedback">Your Feedback:</label>
+                <textarea id="feedback" name="feedback" placeholder="Please share your thoughts..." required></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn">Submit Feedback</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle rating button clicks
+        document.querySelectorAll('.rating-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.rating-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                // Add active class to clicked button
+                button.classList.add('active');
+                // Set rating value
+                document.getElementById('rating').value = button.dataset.rating;
+            });
+        });
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+
+            // Hide alerts
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            // Validate rating
+            if (!document.getElementById('rating').value) {
+                alert('Please select a rating');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting...';
+
+            try {
+                const formData = new FormData(form);
+                const object = {};
+                formData.forEach((value, key) => object[key] = value);
+
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(object)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successAlert.style.display = 'block';
+                    form.reset();
+                    document.querySelectorAll('.rating-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                } else {
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorAlert.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Feedback';
+            }
+        }
+    </script>
+
     <!--footer Section-->
     <footer>
         <p>Made with ❤️ by <span>Saurabh & Sanjay</span> || All Right Reserved.</p>

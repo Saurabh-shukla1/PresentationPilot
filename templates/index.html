@@ -164,10 +164,16 @@
         .or-divider::after {
             right: 0;
         }
+         .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
     </style>
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 </head>
-<body onload="checkAuthState()">
+
     <body onload="showPopup()">
         <div class="overlay"></div>
         <header>
@@ -201,7 +207,7 @@
                     <a href="{{ url_for('start') }}" class="btn1">Start<i class='bx bx-right-arrow-alt' ></i></a>
                 </div>
                 </div>
-            </div>
+
             <div class="img-hero">
                 <img src="../static/shapes/gesturetype.gif" alt="">
                 <div class="rotate-text">
@@ -241,7 +247,7 @@
                 <button type="button" class="btn" onclick="signup()">Sign Up</button>
             </div>
             <div class="or-divider">OR</div>
-        <div id="login" class="form">
+        <div  align="center" >
 
             <button type="button" class="google-btn" onclick="signInWithGoogle()">
                 <img src="../static/Google.png" alt="Google logo">
